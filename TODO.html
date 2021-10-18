@@ -5,6 +5,10 @@
     <meta charset="UTF-8">
     <title>TODO</title>
     <style>
+      html {
+        min-height: 400px;
+      }
+
       body {
         height: 90vh;
       }
@@ -18,7 +22,7 @@
         top: 50%;
         left: 50%;
         width: 45vw;
-        height: 55vh;
+        min-height: 55vh;
         padding-bottom: 2vw;
         transform: translate(-50%, -50%);
         border-radius: 1%;
@@ -33,17 +37,17 @@
 
       .warp {
         width: 90%;
-        min-height: 84%;
+        min-height: 46.2vh;
         box-shadow: -2px -2px 10px 4px #d4d4d4;
         background-color: #fff;
-        font-size: 0.9vw;
+        font-size: 0.8vw;
       }
 
       .warp .input-warp {
         display: flex;
         align-items: center;
         width: 99%;
-        height: 10%;
+        height: 4.62vh;
         border-bottom: 1px solid #ccc;
       }
 
@@ -62,12 +66,13 @@
         padding: 0 0.8vw;
         outline: none;
         border: none;
-        font-size: 0.9vw;
+        font-size: 0.8vw;
         line-height: 100%;
       }
 
       .todo {
         display: flex;
+        align-items: center;
         padding: 0.7vw 0.7vw;
         border-bottom: 1px solid #ccc;
         word-break: break-all;
@@ -77,7 +82,7 @@
         position: absolute;
         right: 4vw;
         display: block;
-        font-size: 1vw;
+        font-size: 0.5vw;
         color: #fa4040;
       }
 
@@ -88,38 +93,6 @@
       .todo .delete-btn:hover {
         cursor: pointer;
       }
-
-      /* input[type="checkbox"] {
-        -webkit-appearance: none;
-        vertical-align: middle;
-        margin-top: 0;
-        background: #fff;
-        border: #999 solid 1px;
-        border-radius: 3px;
-        min-height: 12px;
-        min-width: 12px;
-      }
-
-      input[type="checkbox"]:checked {
-        background: #05c205;
-      }
-
-      input[type="checkbox"]:checked::before {
-        content: '';
-        top: 3px;
-        left: 3px;
-        position: absolute;
-        background: transparent;
-        border: #fff solid 2px;
-        border-top: none;
-        border-right: none;
-        height: 6px;
-        width: 10px;
-        -moz-transform: rotate(-45deg);
-        -ms-transform: rotate(-45deg);
-        -webkit-transform: rotate(-45deg);
-        transform: rotate(-45deg);
-      } */
     </style>
   </head>
 
@@ -139,21 +112,21 @@
     var divNode = null;
     let input = document.getElementById('input');
     input.onkeydown = function add(e) {
-      if (e.keyCode === 13) {
-        if (!divNode) {
+      if (this.value && e.keyCode === 13) { // Enter键
+        if (!divNode) {  // 初始化todo的节点
           divNode = document.createElement('div');
           let checkedNode = document.createElement('input');
           checkedNode.setAttribute('type', 'checkbox');
           checkedNode.classList.add('checked-box');
           checkedNode.addEventListener('change', e => {
-            console.log(e)
+            console.log(e);
           });
           divNode.appendChild(checkedNode);
         }
-        let arr = Array.from(this.value);
+        let arr = Array.from(this.value);  // 将内容拆分单独装到单个标签中，方便后续匹配修改样式
         let frame = document.createDocumentFragment();
         arr.forEach(c => {
-          let numNode = document.createElement('text');
+          let numNode = document.createElement('span');
           numNode.innerText = c;
           frame.appendChild(numNode);
         });
@@ -161,26 +134,28 @@
         divNode.appendChild(frame);
         divNode.classList.add('todo')
         let deleteBtn = document.createElement('div');
-        deleteBtn.innerText = 'x';
+        deleteBtn.innerText = '✖️';
         deleteBtn.classList.add('delete-btn');
         deleteBtn.addEventListener('click', e => {
           e.target.parentNode.remove();
         });
         divNode.appendChild(deleteBtn);
+
+        // 恢复原来状态
         document.getElementById('list').append(divNode);
-        input.value = '';
         let elements = document.getElementsByTagName('text');
         for (let el of elements) {
           if (el.style.color === 'red') {
             el.style.color = '';
           }
         }
+        input.value = '';
         divNode = null;
       }
     }
     input.addEventListener('input', (e) => {
       let elements = document.getElementsByTagName('text');
-      for (let el of elements) {
+      for (let el of elements) {  // 输入时匹配todo是否存在输入关键字
         if (e.data && e.data.match(el.innerText)) {
           el.style.color = 'red';
         }
