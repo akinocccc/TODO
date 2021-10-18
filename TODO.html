@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="UTF-8">
+    <title>TODO</title>
+    <style>
+      body {
+        height: 90vh;
+      }
+
+      .container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        top: 50%;
+        left: 50%;
+        width: 45vw;
+        height: 55vh;
+        padding-bottom: 2vw;
+        transform: translate(-50%, -50%);
+        border-radius: 1%;
+        background-color: #e0e0e0;
+      }
+
+      .title {
+        font-size: 1.8vw;
+        color: #eec7c7;
+        text-shadow: 3px 3px 5px #fff9f9;
+      }
+
+      .warp {
+        width: 90%;
+        min-height: 84%;
+        box-shadow: -2px -2px 10px 4px #d4d4d4;
+        background-color: #fff;
+        font-size: 0.9vw;
+      }
+
+      .warp .input-warp {
+        display: flex;
+        align-items: center;
+        width: 99%;
+        height: 10%;
+        border-bottom: 1px solid #ccc;
+      }
+
+      .warp .input-warp .icon {
+        margin-left: 0.7vw;
+        margin-bottom: 0.2vw;
+        padding: 0.2vw;
+        border: solid #8f8e8e;
+        border-width: 0 0.1vw 0.1vw 0;
+        transform: rotate(45deg);
+      }
+
+      .warp .input-warp .input {
+        width: 100%;
+        height: 100%;
+        padding: 0 0.8vw;
+        outline: none;
+        border: none;
+        font-size: 0.9vw;
+        line-height: 100%;
+      }
+
+      .todo {
+        display: flex;
+        padding: 0.7vw 0.7vw;
+        border-bottom: 1px solid #ccc;
+        word-break: break-all;
+      }
+
+      .todo:hover .delete-btn {
+        position: absolute;
+        right: 4vw;
+        display: block;
+        font-size: 1vw;
+        color: #fa4040;
+      }
+
+      .todo .delete-btn {
+        display: none;
+      }
+
+      .todo .delete-btn:hover {
+        cursor: pointer;
+      }
+
+      /* input[type="checkbox"] {
+        -webkit-appearance: none;
+        vertical-align: middle;
+        margin-top: 0;
+        background: #fff;
+        border: #999 solid 1px;
+        border-radius: 3px;
+        min-height: 12px;
+        min-width: 12px;
+      }
+
+      input[type="checkbox"]:checked {
+        background: #05c205;
+      }
+
+      input[type="checkbox"]:checked::before {
+        content: '';
+        top: 3px;
+        left: 3px;
+        position: absolute;
+        background: transparent;
+        border: #fff solid 2px;
+        border-top: none;
+        border-right: none;
+        height: 6px;
+        width: 10px;
+        -moz-transform: rotate(-45deg);
+        -ms-transform: rotate(-45deg);
+        -webkit-transform: rotate(-45deg);
+        transform: rotate(-45deg);
+      } */
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <h1 class="title">TODOS</h1>
+      <div class="warp">
+        <div class="input-warp">
+          <div class="icon"></div>
+          <input id="input" class="input" type="text">
+        </div>
+        <div id="list"></div>
+      </div>
+    </div>
+  </body>
+  <script>
+    var divNode = null;
+    let input = document.getElementById('input');
+    input.onkeydown = function add(e) {
+      if (e.keyCode === 13) {
+        if (!divNode) {
+          divNode = document.createElement('div');
+          let checkedNode = document.createElement('input');
+          checkedNode.setAttribute('type', 'checkbox');
+          checkedNode.classList.add('checked-box');
+          checkedNode.addEventListener('change', e => {
+            console.log(e)
+          });
+          divNode.appendChild(checkedNode);
+        }
+        let arr = Array.from(this.value);
+        let frame = document.createDocumentFragment();
+        arr.forEach(c => {
+          let numNode = document.createElement('text');
+          numNode.innerText = c;
+          frame.appendChild(numNode);
+        });
+
+        divNode.appendChild(frame);
+        divNode.classList.add('todo')
+        let deleteBtn = document.createElement('div');
+        deleteBtn.innerText = 'x';
+        deleteBtn.classList.add('delete-btn');
+        deleteBtn.addEventListener('click', e => {
+          e.target.parentNode.remove();
+        });
+        divNode.appendChild(deleteBtn);
+        document.getElementById('list').append(divNode);
+        input.value = '';
+        let elements = document.getElementsByTagName('text');
+        for (let el of elements) {
+          if (el.style.color === 'red') {
+            el.style.color = '';
+          }
+        }
+        divNode = null;
+      }
+    }
+    input.addEventListener('input', (e) => {
+      let elements = document.getElementsByTagName('text');
+      for (let el of elements) {
+        if (e.data && e.data.match(el.innerText)) {
+          el.style.color = 'red';
+        }
+      }
+    });
+  </script>
+
+</html>
